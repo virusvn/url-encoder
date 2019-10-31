@@ -1,0 +1,86 @@
+<!-- index.go.html -->
+<html>
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+  </head>
+
+  <body>
+    <div class="container">
+      <ul class="nav">
+        <li class="nav-item">
+          <a class="nav-link active" href="#">&nbsp;</a>
+        </li>
+      </ul>
+      <div class="jumbotron">
+        <form
+          enctype="multipart/form-data"
+          action="/upload"
+          method="post"
+          id="upload-form"
+        >
+          {{ .csrfField }}
+          {{ if .errorMsg }}
+          <div class="alert alert-danger" role="alert">
+            {{ .errorMsg }}
+          </div>
+          {{ end }}
+          <div class="form-group">
+            <label for="urls">URLs ファイル</label>
+            <input
+              type="file"
+              class="form-control-file"
+              id="urls"
+              name="uploadfile"
+              required
+            />
+            <br />
+            <span class="help-text">※txtファイル</span><br />
+            <span class="help-text">※1行1テキスト</span>
+          </div>
+
+          <button
+            type="button"
+            class="btn btn-primary mb-2"
+            onclick="return start()"
+          >
+            アップロード
+          </button>
+        </form>
+      </div>
+    </div>
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+
+    <script>
+      function start() {
+        var form = $('#upload-form');
+        form.validate();
+        if (form.valid()) {
+          form.submit();
+          return true;
+        }
+        return false;
+      }
+    </script>
+  </body>
+</html>
