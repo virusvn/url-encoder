@@ -1,8 +1,8 @@
 package main
 
 import (
-	"bufio"
 	"bytes"
+	"encoding/csv"
 	"flag"
 	"fmt"
 	"github.com/gorilla/mux"
@@ -73,14 +73,11 @@ func upload(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		scanner := bufio.NewScanner(bytes.NewReader(data))
-		// Not actually needed since it’s a default split function.
-		scanner.Split(bufio.ScanLines)
-
+		reader := csv.NewReader(bytes.NewReader(data))
 		var ret []string
-		for scanner.Scan() {
-			line := scanner.Text()
-			line = urlencode(line)
+		records, err := reader.ReadAll()
+		for _, record := range records {
+			line := urlencode(record[0])
 			ret = append(ret, line)
 		}
 		fResult, err := ioutil.TempFile("/tmp", "encoded")
@@ -109,7 +106,9 @@ func checkError(message string, err error) {
 
 func urlencode(s string) (result string) {
 	for _, c := range s {
-		if c <= 0x7f { // single byte
+		if c == 0x0A { // newline
+			result += "%0A"
+		} else if c <= 0x7f { // single byte
 			result += fmt.Sprintf("%%%X", c)
 		} else if c > 0x1fffff { // quaternary byte
 			result += fmt.Sprintf("%%%X%%%X%%%X%%%X",
